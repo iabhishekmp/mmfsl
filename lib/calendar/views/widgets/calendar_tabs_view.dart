@@ -10,7 +10,10 @@ class CalendarTabsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return TabBarView(
       children: [
-        for (final _ in CalendarTabs.values) const CalendarPersonalDetailCard(),
+        for (final tab in CalendarTabs.values)
+          CalendarPersonalDetailCard(
+            tab: tab,
+          ),
       ],
     );
   }

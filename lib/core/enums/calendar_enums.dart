@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 enum CalendarViews {
   days(name: 'Day'),
   week(name: 'Week'),
@@ -21,14 +23,27 @@ enum CalendarTabs {
 }
 
 enum UserPriority {
-  high(text: 'High Priority'),
-  medium(text: 'Medium Priority'),
-  low(text: 'Low Priority'),
+  high(text: 'High Priority', color: Colors.red),
+  medium(text: 'Medium Priority', color: Colors.orange),
+  low(text: 'Low Priority', color: Colors.green),
   ;
 
-  const UserPriority({required this.text});
+  const UserPriority({
+    required this.text,
+    required this.color,
+  });
 
   final String text;
+  final Color color;
+}
+
+extension CalendarTabsExtension on String {
+  CalendarTabs get type {
+    if (this == CalendarTabs.all.name) return CalendarTabs.all;
+    if (this == CalendarTabs.hrd.name) return CalendarTabs.hrd;
+    if (this == CalendarTabs.followUp.name) return CalendarTabs.followUp;
+    return CalendarTabs.tech1;
+  }
 }
 
 extension CalendarUserExtension on String {
@@ -36,5 +51,20 @@ extension CalendarUserExtension on String {
     if (this == UserPriority.high.text) return UserPriority.high;
     if (this == UserPriority.medium.text) return UserPriority.low;
     return UserPriority.low;
+  }
+}
+
+extension CalendarUserDataExtension on int {
+  UserPriority get priority {
+    if (this == 0) return UserPriority.high;
+    if (this == 1) return UserPriority.medium;
+    return UserPriority.low;
+  }
+
+  CalendarTabs get type {
+    if (this == 1) return CalendarTabs.hrd;
+    if (this == 2) return CalendarTabs.tech1;
+    if (this == 3) return CalendarTabs.followUp;
+    return CalendarTabs.all;
   }
 }

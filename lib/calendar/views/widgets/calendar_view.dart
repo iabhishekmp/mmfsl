@@ -3,10 +3,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../../../core/utils.dart';
+import '../../../core/utils/utils.dart';
 
 class CalendarView extends StatefulWidget {
-  const CalendarView({super.key});
+  const CalendarView({required this.onDaySelect, super.key});
+
+  final void Function(DateTime) onDaySelect;
 
   @override
   State<CalendarView> createState() => _CalendarViewState();
@@ -30,6 +32,21 @@ class _CalendarViewState extends State<CalendarView> {
         firstDay: kFirstDay,
         lastDay: kLastDay,
         focusedDay: _focusedDay,
+        onCalendarCreated: (pageController) {
+          Future.delayed(
+            Duration.zero,
+            () {
+              setState(() {
+                _selectedDay = _focusedDay;
+                _focusedDay = _focusedDay;
+                _rangeStart = null; // Important to clean those
+                _rangeEnd = null;
+                _rangeSelectionMode = RangeSelectionMode.toggledOff;
+              });
+              widget.onDaySelect(_focusedDay);
+            },
+          );
+        },
         selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
         rangeStartDay: _rangeStart,
         rangeEndDay: _rangeEnd,
@@ -103,6 +120,7 @@ class _CalendarViewState extends State<CalendarView> {
               _rangeEnd = null;
               _rangeSelectionMode = RangeSelectionMode.toggledOff;
             });
+            widget.onDaySelect(selectedDay);
           }
         },
         onRangeSelected: (start, end, focusedDay) {

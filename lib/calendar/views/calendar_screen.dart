@@ -2,13 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../core/enums/calendar_enums.dart';
+import '../data/controller/calendar_controller.dart';
 import 'widgets/calendar_tabs_row.dart';
 import 'widgets/calendar_tabs_view.dart';
 import 'widgets/calendar_toggle_switch.dart';
 import 'widgets/calendar_view.dart';
 
-class CalendarScreen extends StatelessWidget {
+class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
+
+  @override
+  State<CalendarScreen> createState() => _CalendarScreenState();
+}
+
+class _CalendarScreenState extends State<CalendarScreen> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +40,11 @@ class CalendarScreen extends StatelessWidget {
         child: Column(
           children: [
             //? Calendar
-            const CalendarView(),
+            CalendarView(
+              onDaySelect: (day) {
+                kCalendarController.fetchDataByDay(day: day);
+              },
+            ),
 
             //? Tally of calendar
             Expanded(
