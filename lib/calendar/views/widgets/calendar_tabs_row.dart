@@ -14,10 +14,24 @@ class CalendarTabsRow extends StatelessWidget {
     return Obx(
       () {
         final users = kCalendarController.users.value;
+        final usersTally = kCalendarController.usersTally.value;
+
         return TabBar(
           tabs: [
             for (final tab in CalendarTabs.values)
-              Text('${tab.name} (${users.totalByTab(tab)})'),
+              Builder(
+                builder: (context) {
+                  final name = tab.name;
+                  var count = 0;
+                  if (kCalendarController.calendarViews.value ==
+                      CalendarViews.days) {
+                    count = users.totalByTab(tab);
+                  } else {
+                    count = usersTally.byTab(tab);
+                  }
+                  return Text('$name ($count)');
+                },
+              ),
           ],
           dividerHeight: 0,
           indicatorSize: TabBarIndicatorSize.tab,

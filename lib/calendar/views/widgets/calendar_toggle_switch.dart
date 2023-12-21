@@ -4,7 +4,12 @@ import 'package:flutter/material.dart';
 import '../../../core/enums/calendar_enums.dart';
 
 class CalendarToggleSwitch extends StatefulWidget {
-  const CalendarToggleSwitch({super.key});
+  const CalendarToggleSwitch({
+    required this.onToggle,
+    super.key,
+  });
+
+  final void Function(CalendarViews) onToggle;
 
   @override
   State<CalendarToggleSwitch> createState() => _CalendarToggleSwitchState();
@@ -36,6 +41,7 @@ class _CalendarToggleSwitchState extends State<CalendarToggleSwitch> {
             onValueChanged: (value) {
               if (value != null) {
                 setState(() => view = value);
+                widget.onToggle(view);
               }
             },
             children: {

@@ -3,12 +3,19 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../../core/enums/calendar_enums.dart';
 import '../../../core/utils/utils.dart';
+import '../../data/controller/calendar_controller.dart';
 
 class CalendarView extends StatefulWidget {
-  const CalendarView({required this.onDaySelect, super.key});
+  const CalendarView({
+    required this.onDaySelect,
+    required this.onRangeSelect,
+    super.key,
+  });
 
   final void Function(DateTime) onDaySelect;
+  final void Function(DateTime start, DateTime end) onRangeSelect;
 
   @override
   State<CalendarView> createState() => _CalendarViewState();
@@ -23,6 +30,22 @@ class _CalendarViewState extends State<CalendarView> {
   DateTime? _rangeEnd;
 
   final _textStyle = const TextStyle(fontSize: 17);
+
+  @override
+  void initState() {
+    super.initState();
+    kCalendarController.calendarViews.listen((view) {
+      RangeSelectionMode val;
+      if (view == CalendarViews.week) {
+        val = RangeSelectionMode.toggledOn;
+      } else {
+        val = RangeSelectionMode.disabled;
+      }
+      setState(() {
+        _rangeSelectionMode = val;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,6 +154,9 @@ class _CalendarViewState extends State<CalendarView> {
             _rangeEnd = end;
             _rangeSelectionMode = RangeSelectionMode.toggledOn;
           });
+          if (start != null && end != null) {
+            widget.onRangeSelect(start, end);
+          }
         },
         onPageChanged: (focusedDay) {
           _focusedDay = focusedDay;

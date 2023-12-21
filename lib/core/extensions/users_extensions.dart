@@ -1,4 +1,5 @@
 import '../../calendar/data/models/user_models.dart';
+import '../../calendar/data/models/users_tally_model.dart';
 import '../enums/calendar_enums.dart';
 
 extension UsersExtensions on List<User> {
@@ -25,5 +26,32 @@ extension UsersExtensions on List<User> {
 
   List<User> get getFollowUps {
     return where((element) => element.type == CalendarTabs.followUp).toList();
+  }
+}
+
+extension UsersTallyExtensions on List<UsersTallyModel> {
+  int byTab(CalendarTabs tab) {
+    return switch (tab) {
+      CalendarTabs.all => total,
+      CalendarTabs.hrd => totalHRD,
+      CalendarTabs.tech1 => totalTech1,
+      CalendarTabs.followUp => totalFollowUps,
+    };
+  }
+
+  int get total {
+    return totalHRD + totalTech1 + totalFollowUps;
+  }
+
+  int get totalHRD {
+    return fold(0, (p, e) => p + e.hrd);
+  }
+
+  int get totalTech1 {
+    return fold(0, (p, e) => p + e.tech1);
+  }
+
+  int get totalFollowUps {
+    return fold(0, (p, e) => p + e.followUp);
   }
 }

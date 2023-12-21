@@ -28,10 +28,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
       appBar: AppBar(
         centerTitle: false,
         title: const Text('My Calendar'),
-        actions: const [
+        actions: [
           Padding(
-            padding: EdgeInsets.only(right: 12),
-            child: CalendarToggleSwitch(),
+            padding: const EdgeInsets.only(right: 12),
+            child: CalendarToggleSwitch(
+              onToggle: (view) {
+                kCalendarController.calendarViews.value = view;
+              },
+            ),
           ),
         ],
       ),
@@ -43,6 +47,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
             CalendarView(
               onDaySelect: (day) {
                 kCalendarController.fetchDataByDay(day: day);
+              },
+              onRangeSelect: (start, end) {
+                kCalendarController.fetchDataByDay(
+                  day: start,
+                  end: end,
+                );
               },
             ),
 

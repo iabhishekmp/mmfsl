@@ -17,6 +17,7 @@ class User {
     required this.phone,
     required this.priority,
     required this.type,
+    required this.date,
   });
 
   factory User.fromMap(Map<String, dynamic> map) {
@@ -31,6 +32,7 @@ class User {
       phone: map['phone'] as String,
       priority: (map['priority'] as String).priority,
       type: (map['type'] as String).type,
+      date: DateTime.fromMillisecondsSinceEpoch(map['date'] as int),
     );
   }
 
@@ -47,6 +49,7 @@ class User {
   final String phone;
   final UserPriority priority;
   final CalendarTabs type;
+  final DateTime date;
 
   User copyWith({
     String? id,
@@ -59,6 +62,7 @@ class User {
     String? phone,
     UserPriority? priority,
     CalendarTabs? type,
+    DateTime? date,
   }) {
     return User(
       id: id ?? this.id,
@@ -71,6 +75,7 @@ class User {
       phone: phone ?? this.phone,
       priority: priority ?? this.priority,
       type: type ?? this.type,
+      date: date ?? this.date,
     );
   }
 
@@ -85,6 +90,8 @@ class User {
       'daysLeft': daysLeft,
       'phone': phone,
       'priority': priority.name,
+      'date': date.millisecondsSinceEpoch,
+      'type': type.name,
     };
   }
 

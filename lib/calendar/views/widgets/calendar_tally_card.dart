@@ -1,110 +1,146 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/enums/calendar_enums.dart';
+import '../../data/controller/calendar_controller.dart';
+
 class CalendarTallyCard extends StatelessWidget {
-  CalendarTallyCard({super.key});
+  CalendarTallyCard({required this.tab, super.key});
 
   final date = DateTime(2023, 05, 31);
+  final CalendarTabs tab;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      padding: EdgeInsets.only(
-        left: 24.w,
-        right: 24.w,
-        top: 24.h,
-        bottom: 48.h,
-      ),
-      itemCount: 8,
-      separatorBuilder: (context, index) {
-        return SizedBox(height: 24.h);
-      },
-      itemBuilder: (context, index) {
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.r),
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 8,
-                color: Colors.grey.withOpacity(0.5),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              //? Red Indicator
-              Container(
-                margin: EdgeInsets.symmetric(
-                  vertical: 14.h,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(5.r),
-                ),
-                height: 70.h,
-                width: 5.w,
-              ),
+    final boldTextStyle = TextStyle(
+      fontSize: 18.sp,
+      fontWeight: FontWeight.bold,
+      color: Colors.grey[700],
+    );
 
-              //? Rest of the tally info
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    //? Date
-                    Builder(
-                      builder: (context) {
-                        final textStyle = TextStyle(
-                          color: Colors.grey[600],
-                          fontWeight: FontWeight.bold,
-                        );
-                        return Column(
-                          children: [
-                            Text(
-                              '${date.day}',
-                              textAlign: TextAlign.center,
-                              style: textStyle.copyWith(
-                                fontSize: 28.sp,
-                                letterSpacing: -2,
-                                height: 1.1,
-                              ),
-                            ),
-                            Text(
-                              DateFormat('MMM').format(date).toUpperCase(),
-                              textAlign: TextAlign.center,
-                              style: textStyle.copyWith(
-                                fontSize: 17.sp,
-                                letterSpacing: -1,
-                                height: 1.1,
-                              ),
-                            ),
-                          ],
-                        );
-                      },
+    return Obx(
+      () {
+        final users = kCalendarController.usersTally.value;
+        return users.isEmpty
+            ? Center(
+                child: Text(
+                  'No data found!',
+                  style: boldTextStyle,
+                ),
+              )
+            : ListView.separated(
+                padding: EdgeInsets.only(
+                  left: 24.w,
+                  right: 24.w,
+                  top: 24.h,
+                  bottom: 48.h,
+                ),
+                itemCount: users.length,
+                separatorBuilder: (context, index) {
+                  return SizedBox(height: 24.h);
+                },
+                itemBuilder: (context, index) {
+                  final user = users[index];
+                  return Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.r),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 8,
+                          color: Colors.grey.withOpacity(0.5),
+                        ),
+                      ],
                     ),
+                    child: Row(
+                      children: [
+                        //? Red Indicator
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                            vertical: 14.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: user.priority.color,
+                            borderRadius: BorderRadius.circular(5.r),
+                          ),
+                          height: 70.h,
+                          width: 5.w,
+                        ),
 
-                    //? HRD
-                    const _TallyNumber(name: 'HRD'),
+                        //? Rest of the tally info
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              //? Date
+                              Builder(
+                                builder: (context) {
+                                  final textStyle = TextStyle(
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.bold,
+                                  );
+                                  return Column(
+                                    children: [
+                                      Text(
+                                        '${user.date.day}',
+                                        textAlign: TextAlign.center,
+                                        style: textStyle.copyWith(
+                                          fontSize: 28.sp,
+                                          letterSpacing: -2,
+                                          height: 1.1,
+                                        ),
+                                      ),
+                                      Text(
+                                        DateFormat('MMM')
+                                            .format(user.date)
+                                            .toUpperCase(),
+                                        textAlign: TextAlign.center,
+                                        style: textStyle.copyWith(
+                                          fontSize: 17.sp,
+                                          letterSpacing: -1,
+                                          height: 1.1,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
 
-                    //? Tech 1
-                    const _TallyNumber(name: 'Tech 1'),
+                              //? HRD
+                              _TallyNumber(
+                                name: 'HRD',
+                                count: user.hrd,
+                              ),
 
-                    //? Follow up
-                    const _TallyNumber(name: 'Follow up'),
+                              //? Tech 1
+                              _TallyNumber(
+                                name: 'Tech 1',
+                                count: user.tech1,
+                              ),
 
-                    //? Total
-                    _TallyNumber(
-                      name: 'Total',
-                      bgColor: Colors.grey[800],
-                      textColor: Colors.white.withOpacity(0.8),
+                              //? Follow up
+                              _TallyNumber(
+                                name: 'Follow up',
+                                count: user.followUp,
+                              ),
+
+                              //? Total
+                              _TallyNumber(
+                                name: 'Total',
+                                count: user.total,
+                                bgColor: Colors.grey[800],
+                                textColor: Colors.white.withOpacity(0.8),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
+                  );
+                },
+              );
       },
     );
   }
@@ -113,11 +149,13 @@ class CalendarTallyCard extends StatelessWidget {
 class _TallyNumber extends StatelessWidget {
   const _TallyNumber({
     required this.name,
+    required this.count,
     this.bgColor,
     this.textColor,
   });
 
   final String name;
+  final int count;
   final Color? bgColor;
   final Color? textColor;
   @override
@@ -139,7 +177,7 @@ class _TallyNumber extends StatelessWidget {
             backgroundColor: bgColor ?? Colors.white,
             radius: radius - width,
             child: Text(
-              '33',
+              '$count',
               style: textStyle.copyWith(color: textColor),
             ),
           ),
