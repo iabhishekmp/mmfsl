@@ -6,3 +6,5 @@ linter:
   rules:
     file_names: false
     public_member_api_docs: false
+    always_use_package_imports: false
+    prefer_relative_imports: true
