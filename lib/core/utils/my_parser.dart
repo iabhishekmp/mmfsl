@@ -10,6 +10,6 @@ String inr(double amount) {
 }
 
 //? 5 June 23
-String dMMMYY(DateTime date) {
+String dMMMyy(DateTime date) {
   return DateFormat('d MMM yy').format(date);
 }

@@ -168,7 +168,7 @@ class CalendarPersonalDetailCard extends StatelessWidget {
                                     style: normalTextStyle,
                                   ),
                                   Text(
-                                    dMMMYY(user.dueDate),
+                                    dMMMyy(user.dueDate),
                                     style:
                                         boldTextStyle.copyWith(fontSize: 16.sp),
                                   ),
